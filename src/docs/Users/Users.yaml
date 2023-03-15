@@ -1,0 +1,104 @@
+paths:
+  /api/users/:
+    get:
+      summary: Obtiene todos los usuarios
+      tags:
+        - Users
+      responses:
+        "200":
+          description: Los usuarios fueron obtenidos satisfactoriamente de la base de datos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/User"
+        "500":
+          description: Error interno del servidor, usualmente generado par una query defectuosa o un fallo en la base de datos
+  /api/users/{uid}:
+    get:
+      summary: Obtiene un solo usuario a partir de su Id
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id del usuario que se desea solicitar.
+          schema:
+            $type: String
+      responses:
+        "200":
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/User"
+    put:
+      summary: Actualiza un usuario a partir de su id
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id del usuario que se desea solicitar.
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateUser"
+      responses:
+        "200":
+          description: Usuario renovado
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado de mango
+        first_name:
+          type: String
+          description: Nombre del usuario
+        last_name:
+          type: String
+          description: Apellido del usuario
+        email:
+          type: String
+          description: Correo del usuario, este campo es Cinico
+        password:
+          type: String
+          description: Contrasea Hasheada del usuario.
+      example:
+        _id: ObjectId("638b8c323f3a4b3be6dc397e")
+        first_name: Mauricio
+        last_name: Espinosa
+        email: correomau@correo.com
+        password: $2b$10$Zjc7z6oTEOFikbhKyIlUy.ks4I0octgt3Ddzu/VWxUrsdSIDp2jka
+  requestBodies:
+    updateUser:
+      type: object
+      properties:
+        first_name:
+          type: String
+          description: Nombre del usuario
+        last_name:
+          type: String
+          description: Apellido del usuario
+        email:
+          type: String
+          description: Correo del usuario, este campo es unico
+        password:
+          type: String
+          description: Contrasena del usuario, posteriormente sera hasheada
+      example:
+        first_name: Marisol
+        last_name: Cadena
+        email: correoMarisolgicorreo.com
+        password: 123
